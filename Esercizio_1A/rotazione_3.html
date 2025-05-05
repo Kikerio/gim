@@ -22,9 +22,9 @@
 	<script type="module">
 
 		const sequenza = [
-			"img/rotazione_1.png",
-			"img/rotazione_2.png",
 			"img/rotazione_3.png",
+			"img/rotazione_2.png",
+			"img/rotazione_4.png",
 		]
 
 		let frame = 0
@@ -33,7 +33,7 @@
 			const img = document.querySelector("img")
 			img.src = sequenza[frame]
 			frame = (frame + 1) % sequenza.length
-		}, 1000)
+		}, 150)
 
 	</script>
 </body>
