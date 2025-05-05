@@ -7,7 +7,7 @@
 - [acceso/spento_2]
 - [acceso/spento_3]
 ---
-- [rotazione_2](Esercizio_1A/rotazione_2.html)
+- [rotazione_2](/Esercizio_1A
 - [rotazione_3]
 ---
 - [spostamento_2]
