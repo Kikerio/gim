@@ -10,5 +10,5 @@
 - [rotazione_2](https://kikerio.github.io/gim/Esercizio_1A/rotazione_2.html)
 - [rotazione_3](https://kikerio.github.io/gim/Esercizio_1A/rotazione_3.html)
 ---
-- [spostamento_2]
-- [spostamento_3]
+- [spostamento_2](https://kikerio.github.io/gim/Esercizio_1A/spostamento_2.html)
+- [spostamento_3](https://kikerio.github.io/gim/Esercizio_1A/spostamento_3.html)
