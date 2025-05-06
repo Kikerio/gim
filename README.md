@@ -23,3 +23,5 @@ Questa storia mostra un problema comune: l’ossessione umana per la perfezione.
 
 Sintassi riformulata con supporto di un LLM (ChatGPT, OpenAI).
 
+## ⋆౨ৎ˚⟡˖ esercizio 3a ⋆౨ৎ˚⟡˖
+- [spostamento_2](https://kikerio.github.io/gim/Esercizio_3A/Esercizio/es_03_pong/esercizio_3a_pong.html)
