@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="author" content="Michelle Chicherio" />
+	<title>Animazione logo</title>
+	<style type="text/css">
+		html {
+			height: 100%;
+		}
+		body {
+			background-color: rgb(0, 0, 0);
+			margin: 3em 2em;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		#sfondo {
+			width: 400px;
+			height: 400px;
+			background-color: white; /* o qualsiasi altro colore */
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#sfondo img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="sfondo">
+		<img />
+	</div>
+
+	<script type="module">
+		const sequenza = [
+			"img/IMG_2098.png",
+			"img/IMG_2099.png",
+			"img/IMG_2100.png",
+			"img/IMG_2101.png",
+			"img/IMG_2102.png",
+			"img/IMG_2103.png",
+			"img/IMG_2104.png",
+			"img/IMG_2105.png",
+			"img/IMG_2106.png",
+			"img/IMG_2107.png",
+			"img/IMG_2108.png",
+			"img/IMG_2109.png",
+			"img/IMG_2110.png",
+			"img/IMG_2111.png",
+			"img/IMG_2112.png",
+			"img/IMG_2113.png",
+			"img/IMG_2114.png",
+			"img/IMG_2115.png",
+			"img/IMG_2116.png",
+			"img/IMG_2117.png",
+			"img/IMG_2118.png",
+			"img/IMG_2119.png",
+			"img/IMG_2120.png",
+			"img/IMG_2121.png",
+			"img/IMG_2122.png",
+			"img/IMG_2123.png",
+			"img/IMG_2124.png",
+			"img/IMG_2125.png",
+			"img/IMG_2126.png",
+			"img/IMG_2127.png",
+			"img/IMG_2128.png",
+			"img/IMG_2129.png",
+			"img/IMG_2130.png",
+			"img/IMG_2131.png",
+			"img/IMG_2132.png",
+			"img/IMG_2133.png",
+			"img/IMG_2134.png",
+			"img/IMG_2135.png",
+			"img/IMG_2136.png",
+			"img/IMG_2137.png",
+		];
+
+		let frame = 0;
+
+		setInterval(() => {
+			const img = document.querySelector("#sfondo img");
+			img.src = sequenza[frame];
+			frame = (frame + 1) % sequenza.length;
+		}, 70);
+	</script>
+</body>
+</html>

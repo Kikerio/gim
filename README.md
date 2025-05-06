@@ -15,7 +15,8 @@
 ---
 
 ## ⋆౨ৎ˚⟡˖ esercizio 1b ⋆౨ৎ˚⟡˖
-- [animazione/logo](
+- [animazione/logo](https://kikerio.github.io/gim/Esercizio_1B/animazione_logo.html)
+
 
 ---
 ## ⋆౨ৎ˚⟡˖ esercizio 1c ⋆౨ৎ˚⟡˖
