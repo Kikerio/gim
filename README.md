@@ -26,6 +26,7 @@ Sintassi riformulata con supporto di un LLM (ChatGPT, OpenAI).
 
 ## ⋆౨ৎ˚⟡˖ esercizio 2 ⋆౨ৎ˚⟡˖
 - [parallasse/animato](https://kikerio.github.io/gim/Esercizio_2/index_animato.html)
+- [parallasse/interattivo](https://kikerio.github.io/gim/Esercizio_2/index_interattivo.html)
 
 ## ⋆౨ৎ˚⟡˖ esercizio 3a ⋆౨ৎ˚⟡˖
 - [pong](https://kikerio.github.io/gim/Esercizio_3A/esercizio_3a_pong/esercizio_3a_pong.html)
