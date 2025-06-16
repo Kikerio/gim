@@ -34,4 +34,4 @@ Sintassi riformulata con supporto di un LLM (ChatGPT, OpenAI).
 
 ## ⋆౨ৎ˚⟡˖ esercizio 3b ⋆౨ৎ˚⟡˖
 - [orologio](https://kikerio.github.io/gim/Esercizio_3B/orologio.html)
-- [orologio v2](https://kikerio.github.io/gim/Esercizio_3B/orologio-v2.html)
+- [orologio v2](https://kikerio.github.io/gim/Esercizio_3B/orologio_v2.html)
