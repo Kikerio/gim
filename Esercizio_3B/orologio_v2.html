@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orologio Interattivo Globale</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; 
+        }
+
+        #sky {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background-color 2s linear;
+        }
+        
+        #info-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        @keyframes move-blob-1 {
+            0%   { transform: scale(1)   translate(10vw, -20vh); }
+            50%  { transform: scale(1.2) translate(30vw, 30vh); }
+            100% { transform: scale(1)   translate(10vw, -20vh); }
+        }
+        @keyframes move-blob-2 {
+            0%   { transform: scale(1)   translate(-15vw, 20vh); }
+            50%  { transform: scale(0.8) translate(10vw, -10vh); }
+            100% { transform: scale(1)   translate(-15vw, 20vh); }
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 4s ease-in-out infinite;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            transition: background-color 2s linear;
+            z-index: 1;
+            opacity: 0.9;
+        }
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            animation: move-blob-1 15s ease-in-out infinite alternate;
+        }
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            animation: move-blob-2 12s ease-in-out infinite alternate;
+        }
+
+        #location-container, #clock, #date-container {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            transition: color 2s linear;
+        }
+
+        #location-container {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        #clock {
+            font-size: 20vw;
+            line-height: 1;
+            margin: 0;
+        }
+        
+        #date-container {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 2rem;
+        }
+        
+        #caption {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            transition: color 2s linear, opacity 2s linear;
+        }
+
+        /* === PALETTE COLORI E STILI DINAMICI === */
+
+        .theme-night #sky { background-color: #010414; }
+        .theme-night .blob-1 { background-color: #0022FF; }
+        .theme-night .blob-2 { background-color: #3649A0; }
+        .theme-night #info-container { mix-blend-mode: overlay; color: rgba(255, 255, 255, 0.8);}
+        .theme-night .star { opacity: 1; }
+        .theme-night #caption { color: white; opacity: 0.4; }
+
+        .theme-sunrise #sky { background-color: #FFEADD; }
+        .theme-sunrise .blob-1 { background-color: #FFC500; }
+        .theme-sunrise .blob-2 { background-color: #FF8C69; }
+        .theme-sunrise #info-container { mix-blend-mode: soft-light; color: #8B4513;}
+        .theme-sunrise #caption { color: #8B4513; opacity: 0.6; }
+
+        .theme-day #sky { background-color: #FFF5E1; }
+        .theme-day .blob-1 { background-color: #FFA500; }
+        .theme-day .blob-2 { background-color: #FFD700; }
+        .theme-day #info-container { mix-blend-mode: soft-light; color: #A0522D; }
+        .theme-day #caption { color: #A0522D; opacity: 0.6; }
+
+        .theme-sunset #sky { background-color: #4B0082; }
+        .theme-sunset .blob-1 { background-color: #FF4500; }
+        .theme-sunset .blob-2 { background-color: #8A2BE2; }
+        .theme-sunset #info-container { mix-blend-mode: overlay; color: rgba(255, 255, 255, 0.8); }
+        .theme-sunset .star { opacity: 0.7; }
+        .theme-sunset #caption { color: white; opacity: 0.4; }
+
+    </style>
+</head>
+<body>
+
+    <div id="sky">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div id="info-container">
+            <div id="location-container"></div>
+            <div id="clock"></div>
+            <div id="date-container"></div>
+        </div>
+        <div id="caption">Premi la barra spaziatrice per cambiare fuso orario</div>
+    </div>
+
+    <script>
+        const locationElement = document.getElementById('location-container');
+        const clockElement = document.getElementById('clock');
+        const dateElement = document.getElementById('date-container');
+        const bodyElement = document.body;
+        const skyElement = document.getElementById('sky');
+
+        const locations = [
+            { name: "Ginevra", lat: 46.20, lon: 6.14, timeZone: "Europe/Zurich" },
+            { name: "Dubai", lat: 25.27, lon: 55.29, timeZone: "Asia/Dubai" },
+            { name: "Bangkok", lat: 13.75, lon: 100.50, timeZone: "Asia/Bangkok" },
+            { name: "Tokyo", lat: 35.68, lon: 139.69, timeZone: "Asia/Tokyo" },
+            { name: "Sydney", lat: -33.86, lon: 151.20, timeZone: "Australia/Sydney" },
+            { name: "Los Angeles", lat: 34.05, lon: -118.24, timeZone: "America/Los_Angeles" },
+            { name: "New York", lat: 40.71, lon: -74.00, timeZone: "America/New_York" },
+            { name: "Rio de Janeiro", lat: -22.90, lon: -43.17, timeZone: "America/Sao_Paulo" }
+        ];
+        let currentLocationIndex = 0;
+
+        function createStars() {
+            const starCount = 100;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${Math.random() * 4}s`;
+                star.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                skyElement.appendChild(star);
+            }
+        }
+
+        function updateScene() {
+            const currentLocation = locations[currentLocationIndex];
+            const now = new Date();
+            
+            // L'ora del testo è quella del fuso orario scelto
+            const timeString = now.toLocaleTimeString('it-IT', { timeZone: currentLocation.timeZone, hour: '2-digit', minute: '2-digit', hour12: false });
+            
+            // L'ora per la logica del tema deve essere un numero, sempre per quel fuso orario
+            const localHourForTheme = parseInt(now.toLocaleTimeString('en-US', { timeZone: currentLocation.timeZone, hour: 'numeric', hour12: false }));
+            
+            // Calcola le fasi del giorno per quel luogo
+            const times = SunCalc.getTimes(now, currentLocation.lat, currentLocation.lon);
+            
+            // <<< INIZIO DELLA CORREZIONE DEL BUG >>>
+            // Converti gli orari di alba/tramonto nell'ora locale della città scelta, non del browser
+            const sunriseHour = parseInt(times.sunrise.toLocaleTimeString('en-US', { timeZone: currentLocation.timeZone, hour: 'numeric', hour12: false }));
+            const sunsetHour = parseInt(times.sunset.toLocaleTimeString('en-US', { timeZone: currentLocation.timeZone, hour: 'numeric', hour12: false }));
+            // <<< FINE DELLA CORREZIONE DEL BUG >>>
+
+            // Aggiorna i testi
+            locationElement.textContent = currentLocation.name;
+            clockElement.textContent = timeString;
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', timeZone: currentLocation.timeZone };
+            dateElement.textContent = now.toLocaleDateString('it-IT', dateOptions);
+
+            // Applica il tema corretto
+            let themeClass = 'theme-night';
+            if (localHourForTheme >= sunriseHour && localHourForTheme < sunriseHour + 2) {
+                themeClass = 'theme-sunrise';
+            } else if (localHourForTheme >= sunriseHour + 2 && localHourForTheme < sunsetHour - 1) {
+                themeClass = 'theme-day';
+            } else if (localHourForTheme >= sunsetHour - 1 && localHourForTheme < sunsetHour + 1) {
+                themeClass = 'theme-sunset';
+            }
+            bodyElement.className = themeClass;
+        }
+        
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+                event.preventDefault();
+                currentLocationIndex = (currentLocationIndex + 1) % locations.length;
+                updateScene();
+            }
+        });
+
+        createStars();
+        
+        // Aggiorna la scena principale ogni minuto (per cambi di tema automatici)
+        setInterval(updateScene, 60000);
+        
+        // Aggiorna solo l'orologio testuale ogni secondo
+        setInterval(() => {
+            const currentLocation = locations[currentLocationIndex];
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('it-IT', { timeZone: currentLocation.timeZone, hour: '2-digit', minute: '2-digit', hour12: false });
+            clockElement.textContent = timeString;
+        }, 1000);
+
+        updateScene(); // Chiamata iniziale
+        window.addEventListener('resize', updateScene);
+    </script>
+
+</body>
+</html>
