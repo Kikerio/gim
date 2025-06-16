@@ -33,6 +33,5 @@ Sintassi riformulata con supporto di un LLM (ChatGPT, OpenAI).
 - [pioggia](https://kikerio.github.io/gim/Esercizio_3A/esercizio_3a_pioggia/esercizio_3a_pioggia.html)
 
 ## ⋆౨ৎ˚⟡˖ esercizio 3b ⋆౨ৎ˚⟡˖
-
-
+- [orologio](https://kikerio.github.io/gim/Esercizio_3B/orologio.html)
 
