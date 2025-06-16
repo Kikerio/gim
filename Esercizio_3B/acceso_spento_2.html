@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orologio Dinamico</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; 
+        }
+
+        #sky {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background-color 2s linear;
+        }
+        
+        #info-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        @keyframes move-blob-1 {
+            0%   { transform: scale(1)   translate(10vw, -20vh); }
+            50%  { transform: scale(1.2) translate(30vw, 30vh); }
+            100% { transform: scale(1)   translate(10vw, -20vh); }
+        }
+        @keyframes move-blob-2 {
+            0%   { transform: scale(1)   translate(-15vw, 20vh); }
+            50%  { transform: scale(0.8) translate(10vw, -10vh); }
+            100% { transform: scale(1)   translate(-15vw, 20vh); }
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 4s ease-in-out infinite;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            transition: background-color 2s linear;
+            z-index: 1;
+            opacity: 0.9;
+        }
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            animation: move-blob-1 15s ease-in-out infinite alternate;
+        }
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            animation: move-blob-2 12s ease-in-out infinite alternate;
+        }
+
+        #clock, #date-container {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            transition: color 2s linear;
+        }
+
+        #clock {
+            font-size: 20vw; /* <<< DIMENSIONE RIDOTTA ANCORA */
+            line-height: 1;
+            margin: 0;
+        }
+        
+        #date-container {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 2rem; /* Spazio ridotto per la nuova gerarchia */
+        }
+        
+        /* NUOVO: Stile per la frase descrittiva in basso */
+        #caption {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            transition: color 2s linear, opacity 2s linear;
+        }
+
+        /* === PALETTE COLORI E STILI DINAMICI === */
+
+        .theme-night #sky { background-color: #010414; }
+        .theme-night .blob-1 { background-color: #0022FF; }
+        .theme-night .blob-2 { background-color: #3649A0; }
+        .theme-night #info-container { mix-blend-mode: overlay; color: rgba(255, 255, 255, 0.8);}
+        .theme-night .star { opacity: 1; }
+        .theme-night #caption { color: white; opacity: 0.4; }
+
+        .theme-sunrise #sky { background-color: #FFEADD; }
+        .theme-sunrise .blob-1 { background-color: #FFC500; }
+        .theme-sunrise .blob-2 { background-color: #FF8C69; }
+        .theme-sunrise #info-container { mix-blend-mode: soft-light; color: #8B4513;}
+        .theme-sunrise #caption { color: #8B4513; opacity: 0.6; }
+
+        .theme-day #sky { background-color: #FFF5E1; }
+        .theme-day .blob-1 { background-color: #FFA500; }
+        .theme-day .blob-2 { background-color: #FFD700; }
+        .theme-day #info-container { mix-blend-mode: soft-light; color: #A0522D; }
+        .theme-day #caption { color: #A0522D; opacity: 0.6; }
+
+        .theme-sunset #sky { background-color: #4B0082; }
+        .theme-sunset .blob-1 { background-color: #FF4500; }
+        .theme-sunset .blob-2 { background-color: #8A2BE2; }
+        .theme-sunset #info-container { mix-blend-mode: overlay; color: rgba(255, 255, 255, 0.8); }
+        .theme-sunset .star { opacity: 0.7; }
+        .theme-sunset #caption { color: white; opacity: 0.4; }
+
+    </style>
+</head>
+<body>
+
+    <div id="sky">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+
+        <div id="info-container">
+            <div id="clock"></div>
+            <div id="date-container"></div>
+        </div>
+        
+        <div id="caption">I colori e il cielo cambiano con le ore del giorno</div>
+    </div>
+
+    <script>
+        const clockElement = document.getElementById('clock');
+        const dateElement = document.getElementById('date-container');
+        const bodyElement = document.body;
+        const skyElement = document.getElementById('sky');
+
+        function createStars() {
+            const starCount = 100;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${Math.random() * 4}s`;
+                star.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                skyElement.appendChild(star);
+            }
+        }
+
+        function updateScene() {
+            const now = new Date();
+            const hour = now.getHours();
+            
+            const lat = 46.20;
+            const lon = 6.14;
+            const times = SunCalc.getTimes(now, lat, lon);
+
+            const sunriseHour = times.sunrise.getHours();
+            const sunsetHour = times.sunset.getHours();
+
+            clockElement.textContent = `${String(hour).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+            const dateString = now.toLocaleDateString('it-IT', dateOptions);
+            dateElement.textContent = dateString;
+
+            let themeClass = 'theme-night';
+
+            if (hour >= sunriseHour && hour < sunriseHour + 2) {
+                themeClass = 'theme-sunrise';
+            } else if (hour >= sunriseHour + 2 && hour < sunsetHour - 1) {
+                themeClass = 'theme-day';
+            } else if (hour >= sunsetHour - 1 && hour < sunsetHour + 1) {
+                themeClass = 'theme-sunset';
+            }
+            
+            bodyElement.className = themeClass;
+        }
+
+        // Esecuzione
+        createStars();
+        setInterval(updateScene, 60000);
+        updateScene();
+        window.addEventListener('resize', updateScene);
+    </script>
+
+</body>
+</html>
