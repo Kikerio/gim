@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neve Semplice con Emoji ❄️</title>
+    <style>
+        body {
+            background-color: #3182ce;
+            background-image: linear-gradient(#3182ce, #f0f9ff);
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+        }
+
+        .fiocco {
+            position: absolute;
+            top: -30px;
+            
+            /* Colore bianco puro per l'emoji */
+            color: white;
+            
+            /* Aggiunge una leggerissima ombra per far risaltare meglio il fiocco */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+            pointer-events: none;
+            animation: caduta linear forwards;
+        }
+
+        @keyframes caduta {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        const contenitore = document.body;
+        const NUM_COLONNE = 100;
+        let altezzaNeve = new Array(NUM_COLONNE).fill(0);
+
+        function creaFiocco() {
+            const fiocco = document.createElement('div');
+            fiocco.classList.add('fiocco');
+            
+            // === SIAMO TORNATI ALL'EMOJI ===
+            fiocco.innerHTML = '❄️';
+            
+            contenitore.appendChild(fiocco);
+
+            // La dimensione ora controlla la grandezza del carattere dell'emoji
+            const dimensione = Math.random() * 20 + 15; // Dimensione tra 15px e 35px
+            fiocco.style.fontSize = dimensione + 'px';
+
+            const posizioneX = Math.random() * 100;
+            fiocco.style.left = posizioneX + 'vw';
+
+            const durataAnimazione = Math.random() * 7 + 6; // Tra 6 e 13 secondi
+            fiocco.style.animationDuration = durataAnimazione + 's';
+
+            fiocco.addEventListener('animationend', () => {
+                // Quando atterra, l'emoji sparisce...
+                fiocco.innerHTML = '';
+                
+                // ...e si trasforma in un pallino bianco per la neve accumulata
+                fiocco.style.animation = 'none';
+                fiocco.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
+                fiocco.style.borderRadius = '50%';
+                
+                // Impostiamo la dimensione del pallino
+                const diametroNeve = dimensione * 0.5;
+                fiocco.style.width = diametroNeve + 'px';
+                fiocco.style.height = diametroNeve + 'px';
+                
+                const colonna = Math.floor(posizioneX / 100 * NUM_COLONNE);
+                const posizioneY = window.innerHeight - altezzaNeve[colonna];
+                
+                fiocco.style.top = posizioneY + 'px';
+                
+                // Usiamo il diametro per calcolare l'accumulo
+                altezzaNeve[colonna] += diametroNeve * 0.7;
+            });
+        }
+
+        setInterval(creaFiocco, 150);
+
+    </script>
+
+</body>
+</html>

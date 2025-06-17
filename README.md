@@ -31,6 +31,8 @@ Sintassi riformulata con supporto di un LLM (ChatGPT, OpenAI).
 ## ⋆౨ৎ˚⟡˖ esercizio 3a ⋆౨ৎ˚⟡˖
 - [pong](https://kikerio.github.io/gim/Esercizio_3A/esercizio_3a_pong/esercizio_3a_pong.html)
 - [pioggia](https://kikerio.github.io/gim/Esercizio_3A/esercizio_3a_pioggia/esercizio_3a_pioggia.html)
+- [neve](https://kikerio.github.io/gim/Esercizio_3A/esercizio_3a_neve/esercizio_3a_neve.html)
+
 
 ## ⋆౨ৎ˚⟡˖ esercizio 3b ⋆౨ৎ˚⟡˖
 - [orologio](https://kikerio.github.io/gim/Esercizio_3B/orologio.html)
